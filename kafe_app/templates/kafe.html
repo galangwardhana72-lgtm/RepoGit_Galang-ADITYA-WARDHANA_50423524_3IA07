@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Kafe Santai - Pemesanan Online</title>
+
+    <!-- Mengambil file CSS dari folder static Flask -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Agar tampilan responsif di perangkat mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <!-- HEADER: logo / judul kafe -->
+    <header>
+        <div class="header-container">
+            <div>
+                <h1>☕ Kafe Santai</h1>
+                <p>Nikmati Menu kami</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA -->
+    <div class="container">
+
+        <!-- FLASH MESSAGE: menampilkan pesan sukses / error dari Flask -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="layout">
+
+            <!-- KOLOM MENU (kiri) -->
+            <div class="menu-section">
+
+                <!-- KATEGORI: tombol filter menu -->
+                <div class="categories">
+                    <!-- Tombol 'Semua' aktif jika variabel kategori kosong -->
+                    <a href="{{ url_for('home') }}"
+                       class="btn-category {% if not kategori %}active{% endif %}">
+                        Semua
+                    </a>
+
+                    <!-- Kategori Kopi -->
+                    <a href="{{ url_for('kategori', nama='Kopi') }}"
+                       class="btn-category {% if kategori == 'Kopi' %}active{% endif %}">
+                        Kopi
+                    </a>
+
+                    <!-- Kategori Makanan -->
+                    <a href="{{ url_for('kategori', nama='Makanan') }}"
+                       class="btn-category {% if kategori == 'Makanan' %}active{% endif %}">
+                        Makanan
+                    </a>
+
+                    <!-- Kategori Dessert -->
+                    <a href="{{ url_for('kategori', nama='Dessert') }}"
+                       class="btn-category {% if kategori == 'Dessert' %}active{% endif %}">
+                        Dessert
+                    </a>
+                </div>
+
+                <!-- GRID MENU: looping semua item di variabel 'menu' -->
+                <div class="menu-grid">
+                    {% for item in menu %}
+                    <div class="menu-card">
+                        <!-- Gambar menu -->
+                        <img src="{{ item.gambar }}" alt="{{ item.nama }}">
+
+                        <div class="menu-info">
+                            <!-- Nama & deskripsi menu -->
+                            <h3>{{ item.nama }}</h3>
+                            <p>{{ item.deskripsi }}</p>
+
+                            <div class="menu-footer">
+                                <!-- Format harga: angka jadi 42.000 -->
+                                <span class="price">
+                                    Rp {{ "{:,}".format(item.harga).replace(",", ".") }}
+                                </span>
+
+                                <!-- Tombol tambah ke keranjang → panggil route /tambah/<id> -->
+                                <a href="{{ url_for('tambah', item_id=item.id) }}"
+                                   class="btn-add">
+                                    + Tambah
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- KOLOM KERANJANG (kanan) -->
+            <div class="cart-panel" id="keranjang">
+                <h2>🛒 Keranjang Belanja</h2>
+
+                <!-- Jika keranjang tidak kosong -->
+                {% if cart %}
+                    <!-- Hanya daftar item keranjang yang bisa di-scroll -->
+                    <div class="cart-scroll">
+                        <!-- Loop setiap item di keranjang -->
+                        {% for id, item in cart.items() %}
+                        <div class="cart-item">
+                            <p>{{ item.nama }} ({{ item.jumlah }}x)</p>
+                            <p>
+                                Rp {{ "{:,}".format(item.harga * item.jumlah).replace(",", ".") }}
+                            </p>
+
+                            <!-- Hapus 1 jenis item dari keranjang -->
+                            <a href="{{ url_for('hapus', item_id=id) }}"
+                               class="btn-delete">
+                                Hapus
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- TOTAL harga semua item -->
+                    <div class="total-row">
+                        <strong>Total:</strong>
+                        <span>Rp {{ "{:,}".format(total).replace(",", ".") }}</span>
+                    </div>
+
+                    <!-- FORM PEMESANAN: dikirim ke route /pesan (via POST) -->
+                    <form method="POST" action="/pesan" class="order-form">
+                        <input type="text" name="nama" placeholder="Nama Anda" required>
+                        <!-- No. Telepon: hanya angka -->
+                        <input
+                                type="text"
+                                name="telepon"
+                                placeholder="No. Telepon"required
+                                inputmode="numeric"      >
+
+                        <!-- No. Meja: hanya angka -->
+                        <input
+                                type="text"
+                                name="no_meja"
+                                placeholder="No. Meja"required
+                                inputmode="numeric">
+                        <textarea name="catatan" placeholder="Catatan tambahan..."></textarea>
+                        <button type="submit" class="btn-submit">
+                            Pesan Sekarang
+                        </button>
+                    </form>
+
+                {% else %}
+                    <!-- Jika keranjang kosong -->
+                    <p class="cart-empty">Keranjang masih kosong</p>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FOOTER: informasi bawah halaman -->
+    <footer>
+        <p>&copy; 2025 Kafe Santai. Semua hak dilindungi.</p>
+        <p>Buka setiap hari: 08.00 - 22.00 WIB</p>
+    </footer>
+</body>
+</html>
