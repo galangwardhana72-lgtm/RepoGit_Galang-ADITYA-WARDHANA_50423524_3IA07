@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Menu</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+  <h1>📋 Admin - Data Menu</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+      {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <a class="btn-add" href="{{ url_for('admin_menu_add') }}">+ Tambah Menu</a>
+  <a class="btn-category" href="{{ url_for('admin_orders_list') }}">Lihat Pesanan</a>
+
+  <table style="width:100%; margin-top:15px; border-collapse: collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:1px solid #ddd;">
+        <th>Nama</th><th>Kategori</th><th>Harga</th><th>Gambar</th><th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in menu %}
+      <tr style="border-bottom:1px solid #eee;">
+        <td>{{ item.nama }}</td>
+        <td>{{ item.kategori }}</td>
+        <td>Rp {{ "{:,}".format(item.harga).replace(",", ".") }}</td>
+        <td>
+          {% if item.gambar %}<a href="{{ item.gambar }}" target="_blank">lihat</a>{% else %}-{% endif %}
+        </td>
+        <td>
+          <a class="btn-category" href="{{ url_for('admin_menu_edit', menu_id=item.id) }}">Edit</a>
+          <a class="btn-delete" href="{{ url_for('admin_menu_delete', menu_id=item.id) }}"
+             onclick="return confirm('Hapus menu ini?')">Hapus</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <p style="margin-top:20px;"><a href="{{ url_for('home') }}">⬅ Halaman User</a></p>
+</div>
+</body>
+</html>

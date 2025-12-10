@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>List Pesanan</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+  <h1>📦 Admin - List Pesanan</h1>
+
+  <table style="width:100%; margin-top:15px; border-collapse: collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:1px solid #ddd;">
+        <th>ID</th><th>Nama</th><th>Telepon</th><th>No Meja</th><th>Catatan</th><th>Waktu</th><th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for o in orders %}
+      <tr style="border-bottom:1px solid #eee;">
+        <td>#{{ o.id }}</td>
+        <td>{{ o.nama }}</td>
+        <td>{{ o.telepon }}</td>
+        <td>{{ o.no_meja }}</td>
+        <td>{{ o.catatan or '-' }}</td>
+        <td>{{ o.created_at }}</td>
+        <td>
+          <a class="btn-category" href="{{ url_for('admin_orders_detail', order_id=o.id) }}">Detail</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <p style="margin-top:20px;"><a href="{{ url_for('admin_menu_list') }}">⬅ Kelola Menu</a></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Detail Pesanan</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+  <h1>🧾 Detail Pesanan #{{ order.id }}</h1>
+
+  <div style="margin: 10px 0 20px;">
+    <p><strong>Nama:</strong> {{ order.nama }}</p>
+    <p><strong>Telepon:</strong> {{ order.telepon }}</p>
+    <p><strong>No Meja:</strong> {{ order.no_meja }}</p>
+    <p><strong>Catatan:</strong> {{ order.catatan or '-' }}</p>
+    <p><strong>Waktu:</strong> {{ order.created_at }}</p>
+  </div>
+
+  <h2>Daftar Item</h2>
+  <table style="width:100%; margin-top:10px; border-collapse: collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:1px solid #ddd;">
+        <th>Menu</th><th>Harga</th><th>Jumlah</th><th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in items %}
+      <tr style="border-bottom:1px solid #eee;">
+        <td>{{ i.nama_menu }}</td>
+        <td>Rp {{ "{:,}".format(i.harga).replace(",", ".") }}</td>
+        <td>{{ i.jumlah }}x</td>
+        <td>Rp {{ "{:,}".format(i.harga * i.jumlah).replace(",", ".") }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div style="margin-top:15px; font-size:18px;">
+    <strong>Total:</strong> Rp {{ "{:,}".format(total).replace(",", ".") }}
+  </div>
+
+  <p style="margin-top:20px;"><a href="{{ url_for('admin_orders_list') }}">⬅ Kembali</a></p>
+</div>
+</body>
+</html>

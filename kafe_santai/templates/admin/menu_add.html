@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Tambah Menu</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+  <h1>➕ Tambah Menu</h1>
+
+  <form method="POST" class="order-form">
+    <input type="text" name="nama" placeholder="Nama menu" required>
+    <textarea name="deskripsi" placeholder="Deskripsi"></textarea>
+    <input type="text" name="harga" placeholder="Harga (angka)" required inputmode="numeric">
+
+    <select name="kategori" required>
+      <option value="Kopi">Kopi</option>
+      <option value="Makanan">Makanan</option>
+      <option value="Dessert">Dessert</option>
+    </select>
+
+    <input type="text" name="gambar" placeholder="URL gambar online (https://...)">
+    <button type="submit" class="btn-submit">Simpan</button>
+  </form>
+
+  <p style="margin-top:20px;"><a href="{{ url_for('admin_menu_list') }}">⬅ Kembali</a></p>
+</div>
+</body>
+</html>
